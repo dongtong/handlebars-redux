@@ -1,0 +1,28 @@
+{
+  "name": "handlebars-redux",
+  "version": "0.0.1",
+  "description": "Library to connect handlebars-based components to redux",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/researchsquare/handlebars-redux.git"
+  },
+  "keywords": [
+    "handlebars",
+    "hbsfy",
+    "redux"
+  ],
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/researchsquare/handlebars-redux/issues"
+  },
+  "homepage": "https://github.com/researchsquare/handlebars-redux#readme",
+  "dependencies": {
+    "hbsfy": "^2.7.0",
+    "node-deepcopy": "^0.1.1",
+    "underscore": "^1.8.3"
+  }
+}
