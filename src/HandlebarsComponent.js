@@ -136,6 +136,9 @@ class HandlebarsComponent
     {
         let obj = this;
         el = el || domElement(this.el);
+        if (!el) {
+            return;
+        }
 
         _.each(el.children, function (child) {
             var data = {};
