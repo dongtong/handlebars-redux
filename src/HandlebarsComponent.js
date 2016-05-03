@@ -82,12 +82,12 @@ class HandlebarsComponent
     handleChange(nextProps)
     {
         let dispatch = this.dispatch;
+        let willUpdate = this.shouldComponentUpdate(nextProps, this.getState()) || this.forceUpdate;
 
-        if (this.shouldComponentUpdate(nextProps, this.getState()) || this.forceUpdate) {
+        if (willUpdate) {
             this.componentWillReceiveProps(nextProps);
             this.componentWillUpdate(nextProps, this.getState());
             this.render();
-            this.componentDidUpdate();
             this.cleanup();
         }
 
@@ -95,6 +95,10 @@ class HandlebarsComponent
             component.setDispatch(dispatch);
             component.handleChange(nextProps);
         });
+
+        if (willUpdate) {
+            this.componentDidUpdate();
+        }
     }
 
     changesIn(properties, props)
