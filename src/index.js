@@ -1,9 +1,10 @@
 'use strict';
 
-import { connect } from './connect.js';
+import { connect, registerComponents } from './utils.js';
 import HandlebarsComponent from './HandlebarsComponent.js';
 
 export {
     connect,
+    registerComponents,
     HandlebarsComponent
 };

@@ -1,34 +1,6 @@
 'use strict';
 
 import _ from 'underscore';
-import Handlebars from 'hbsfy/runtime';
-
-let initHandlebarsHelpers = function() {
-    if ('component' in Handlebars.helpers) {
-        return;
-    }
-
-    // The component helper gives us the ability to create a component with child components.
-    // An example component would look like
-    // <div id="app">
-    //    {{{component 'Header'}}}
-    //    {{{component 'Body'}}}
-    // </div>
-    Handlebars.registerHelper('component', function(name, data) {
-        let divName = name.replace( /([a-z])([A-Z])/g, '$1-$2' ).toLowerCase();
-        divName = `handlebar-component-${divName}`;
-
-        // Make sure we don't load up multiple copies of the child component
-        let componentLoaded = data.data.root.component._componentIds.indexOf(divName) !== -1;
-        if (!componentLoaded) {
-            var component = new HandlebarsComponent.components[name](divName);
-            data.data.root.component.components.push(component);
-        }
-
-        // Returns a placeholder div to render child component
-        return `<div id="${divName}" data-component="${name}"></div>`;
-    });
-}
 
 let domElement = function(identifier) {
     if (typeof identifier === 'object') {
@@ -36,14 +8,13 @@ let domElement = function(identifier) {
     }
 
     return document.getElementById(identifier);
-}
+};
 
 class HandlebarsComponent
 {
     init(el)
     {
         this._componentIds = [];
-        initHandlebarsHelpers();
         this.el = el || null;
         this.components = [];
         this.dispatch = null;
@@ -103,15 +74,12 @@ class HandlebarsComponent
 
     changesIn(properties, props)
     {
-        var keysChanged = _.map(this.props, function (value, key) {
-            if (!_.isEqual(value, props[key])) {
-                return key;
-            }
-
-            return null;
+        var oldProps = this.props;
+        var found = _.find(properties, function (property) {
+            return !_.isEqual(props[property], oldProps[property]);
         });
 
-        return _.intersection(keysChanged, properties).length > 0;
+        return found ? true : false;
     }
 
     shouldComponentUpdate(props, state)
@@ -159,11 +127,16 @@ class HandlebarsComponent
 
             // Here, we're only tracking onclick. Eventually, we may want to track
             // more
-            if (data.onclick) {
-                child.onclick = function(e) {
-                    obj[data.onclick](e, data);
-                };
-            }
+            var actionableProperties = [ 'onclick', 'onsubmit' ];
+            _.each(actionableProperties, function (property) {
+                if (data[property]) {
+                    child[property] = function(e) {
+                        obj[data[property]](e, data);
+
+                        return false;
+                    };
+                }
+            });
 
             obj.bindActions(child);
         });
@@ -198,8 +171,5 @@ class HandlebarsComponent
         this.forceUpdate = false;
     }
 }
-
-// The component needs a list of child components that are to be rendered dynamically
-HandlebarsComponent.components = {};
 
 export default HandlebarsComponent;
