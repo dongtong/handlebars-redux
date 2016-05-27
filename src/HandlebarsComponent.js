@@ -127,7 +127,7 @@ class HandlebarsComponent
 
             // Here, we're only tracking onclick. Eventually, we may want to track
             // more
-            var actionableProperties = [ 'onclick', 'onsubmit' ];
+            var actionableProperties = [ 'onclick', 'onsubmit', 'onchange', 'onkeyup' ];
             _.each(actionableProperties, function (property) {
                 if (data[property]) {
                     child[property] = function(e) {
